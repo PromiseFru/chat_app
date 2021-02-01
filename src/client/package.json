@@ -11,6 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "blessed": "^0.1.81",
-    "socket.io-client": "^3.1.0"
+    "ora": "^5.3.0",
+    "prompt": "^1.1.0",
+    "socket.io-client": "^3.1.0",
+    "util": "^0.12.3"
   }
 }

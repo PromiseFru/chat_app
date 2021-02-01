@@ -1,6 +1,9 @@
 const url = 'http://localhost:3000'
 const client = require('socket.io-client')(url);
 const blessed = require('blessed');
+const prompt = require('prompt');
+const spinner = require('ora')();
+const util = require('util');
 
 // client.on('connect', () => {
 //     console.log('connected to server');
@@ -10,73 +13,143 @@ const blessed = require('blessed');
 //     client.emit('disconnect');
 // });
 
+(async () => {
+    var schema = {
+        properties: {
+            username: {
+                description: 'Enter your username',
+                pattern: /^[a-zA-Z\s\-]+$/,
+                message: 'Name must be only letters, spaces, or dashes',
+                required: true
+            },
+            password: {
+                description: 'Enter your password',
+                replace: '*',
+                hidden: true
+            }
+        }
+    };
 
-// Create a screen object.
-var screen = blessed.screen({
-    smartCSR: true
-  });
-   
-  screen.title = 'my window title';
-   
-  // Create a box perfectly centered horizontally and vertically.
-  var box = blessed.box({
-    top: 'center',
-    left: 'center',
-    width: '50%',
-    height: '50%',
-    content: 'Hello {bold}world{/bold}!',
-    tags: true,
-    border: {
-      type: 'line'
-    },
-    style: {
-      fg: 'white',
-      bg: 'magenta',
-      border: {
-        fg: '#f0f0f0'
-      },
-      hover: {
-        bg: 'green'
-      }
-    }
-  });
-   
-  // Append our box to the screen.
-  screen.append(box);
-   
-  // Add a png icon to the box
-  var icon = blessed.image({
-    parent: box,
-    top: 0,
-    left: 0,
-    type: 'overlay',
-    width: 'shrink',
-    height: 'shrink',
-    file: __dirname + '/my-program-icon.png',
-    search: false
-  });
-   
-  // If our box is clicked, change the content.
-  box.on('click', function(data) {
-    box.setContent('{center}Some different {red-fg}content{/red-fg}.{/center}');
+    // // Start the prompt
+    // prompt.start();
+    // prompt.message = '';
+
+    // const get = util.promisify(prompt.get);
+    // const result = await get(schema);
+    // try {
+    //     // Log the results.
+    //     console.log('Command-line input received:');
+    //     console.log('  name: ' + result.username);
+    //     console.log('  password: ' + result.password);
+    // } catch (e) {
+    //     console.log(e)
+    // }
+
+    // Create a screen object.
+    var screen = blessed.screen({
+        smartCSR: true
+    });
+
+    screen.title = 'Terminal chat App';
+
+    var form = blessed.form({
+        parent: screen,
+        keys: true,
+        left: 'center',
+        top: 'center',
+        width: 30,
+        height: 8,
+        bg: 'green',
+        autoNext: true,
+        content: 'Add Alert'
+    });
+
+    var greaterThanEdit = blessed.Textbox({
+        parent: form,
+        top: 3,
+        height: 1,
+        left: 2,
+        right: 2,
+        bg: 'black',
+        keys: true,
+        inputOnFocus: true,
+        content: 'test',
+    });
+
+
+    var submit = blessed.button({
+        parent: form,
+        mouse: true,
+        keys: true,
+        shrink: true,
+        padding: {
+            left: 1,
+            right: 1
+        },
+        left: 10,
+        bottom: 2,
+        name: 'submit',
+        content: 'submit',
+        style: {
+            bg: 'blue',
+            focus: {
+                bg: 'red'
+            },
+            hover: {
+                bg: 'red'
+            }
+        }
+    });
+
+    var cancel = blessed.button({
+        parent: form,
+        mouse: true,
+        keys: true,
+        shrink: true,
+        padding: {
+            left: 1,
+            right: 1
+        },
+        left: 20,
+        bottom: 2,
+        name: 'cancel',
+        content: 'cancel',
+        style: {
+            bg: 'blue',
+            focus: {
+                bg: 'red'
+            },
+            hover: {
+                bg: 'red'
+            }
+        }
+    });
+
+    submit.on('press', function () {
+        form.submit();
+    });
+
+    cancel.on('press', function () {
+        form.reset();
+    });
+
+    form.on('submit', function (data) {
+        form.setContent('Submitted.');
+        screen.render();
+    });
+
+    form.on('reset', function (data) {
+        form.setContent('Canceled.');
+        screen.render();
+    });
+
+    screen.key('q', function () {
+        process.exit(0);
+    });
+
+    greaterThanEdit.focus();
+
+
     screen.render();
-  });
-   
-  // If box is focused, handle `enter`/`return` and give us some more content.
-  box.key('enter', function(ch, key) {
-    box.setContent('{right}Even different {black-fg}content{/black-fg}.{/right}\n');
-    box.setLine(1, 'bar');
-    box.insertLine(1, 'foo');
-    screen.render();
-  });
-   
-  // Quit on Escape, q, or Control-C.
-  screen.key(['escape', 'q', 'C-c'], function(ch, key) {
-    return process.exit(0);
-  });
-   
-  // Focus our element.
-  box.focus();
-   
-  // Render the screen.
-  screen.render();
+
+})();
