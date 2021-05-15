@@ -9,7 +9,7 @@ let hash = (data => {
 });
 
 module.exports = function (app, myDataBase) {
-    app.route("/").get((req, res) => {
+    app.get('/', (req, res) => {
         res.render('pug', {
             showLogin: true,
             showRegistration: true,
@@ -33,7 +33,7 @@ module.exports = function (app, myDataBase) {
     })
 
     app.get("/profile", ensureAuthenticated, (req, res) => {
-        res.render(__dirname + "views/pug/profile", {
+        res.render(process.cwd() + "/views/pug/profile", {
             username: req.user.username,
         });
     })
@@ -43,7 +43,7 @@ module.exports = function (app, myDataBase) {
         res.redirect('/');
     })
 
-    app.route('/register').post((req, res, next) => {
+    app.post('/register', (req, res, next) => {
         const password_hash = hash(req.body.password);
         myDataBase.findOne({
             username: req.body.username
@@ -51,7 +51,7 @@ module.exports = function (app, myDataBase) {
             if (err) {
                 next(err);
             } else if (user) {
-                req.redirect('/');
+                res.redirect('/');
             } else {
                 myDataBase.insertOne({
                     username: req.body.username,
@@ -64,21 +64,22 @@ module.exports = function (app, myDataBase) {
                     }
                 })
             }
-        }, passport.authenticate('local', {
-            failureRedirect: '/'
-        }), (req, res, next) => {
-            res.redirect('/profile');
         })
+    }, passport.authenticate('local', {
+        failureRedirect: '/'
+    }), (req, res, next) => {
+        console.log("i see you")
+        res.redirect('/profile');
     });
 
     app.get('/chat', ensureAuthenticated, (req, res) => {
-        res.render(__dirname + 'views/pug/chat', {
+        res.render(process.cwd() + '/views/pug/chat', {
             user: req.user
         })
     })
 
     app.get('/auth/github', passport.authenticate('github'));
-    app.route('/auth/github/callback').get(passport.authenticate('github', {
+    app.get('/auth/github/callback', passport.authenticate('github', {
         failureRedirect: '/'
     }), (req, res) => {
         req.session.user_id = req.user.id;
