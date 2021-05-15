@@ -1,0 +1,21 @@
+{
+  "name": "chat_app",
+  "version": "1.0.0",
+  "description": "* A bi-directional communication system  * Login to chat with credentials * Stores chat in a database * Fetches chats from database and brings to each user",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PromiseFru/chat_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PromiseFru/chat_app/issues"
+  },
+  "homepage": "https://github.com/PromiseFru/chat_app#readme"
+}
