@@ -14,7 +14,7 @@ module.exports = function (app, myDataBase) {
             showLogin: true,
             showRegistration: true,
             showSocialAuth: true,
-            title: "Connected to Database",
+            title: "Hey there!",
             message: "Please Login"
         });
     });
@@ -44,7 +44,7 @@ module.exports = function (app, myDataBase) {
     })
 
     app.route('/register').post((req, res, next) => {
-        const hash = hash(req.body.password)
+        const password_hash = hash(req.body.password);
         myDataBase.findOne({
             username: req.body.username
         }, (err, user) => {
@@ -55,7 +55,7 @@ module.exports = function (app, myDataBase) {
             } else {
                 myDataBase.insertOne({
                     username: req.body.username,
-                    password: hash
+                    password: password_hash
                 }, (err, doc) => {
                     if (err) {
                         res.redirect('/');

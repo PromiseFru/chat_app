@@ -40,6 +40,8 @@ io.use(
 myDB(async client => {
     const myDataBase = await client.db("test").collection("users");
 
+    passport(app, myDataBase);
+
     routes(app, myDataBase);
 
     app.use((req, res, next) => {
@@ -47,8 +49,6 @@ myDB(async client => {
             .type('text')
             .send('Not Found')
     })
-
-    passport(app, myDataBase);
 
     let currentUsers = 0;
 

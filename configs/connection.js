@@ -18,6 +18,8 @@ async function main(callback) {
         // Make the appropriate DB calls
         await callback(client);
 
+        console.log("Database connected");
+
     } catch (e) {
         // Catch any errors
         console.error(e);

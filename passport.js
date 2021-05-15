@@ -4,6 +4,14 @@ var LocalStrategy = require('passport-local');
 var passport = require('passport');
 var session = require('express-session');
 var GitHubStrategy = require('passport-github').Strategy;
+const crypto = require('crypto');
+
+let hash = (data => {
+    var hash = crypto.createHash("sha256");
+    hash.update(data)
+
+    return hash.digest("hex");
+});
 
 module.exports = function (app, myDataBase) {
     app.use(session({
@@ -53,7 +61,7 @@ module.exports = function (app, myDataBase) {
     passport.use(new GitHubStrategy({
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: 'https://repl.it/@FruPromise/auth/github/callback'
+            callbackURL: 'http://localhost:3000/callback'
         },
         function (accessToken, refreshToken, profile, cb) {
             console.log(profile);
