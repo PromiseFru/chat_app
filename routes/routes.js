@@ -1,5 +1,12 @@
-var bcrypt = require('bcrypt');
+const crypto = require('crypto');
 var passport = require('passport');
+
+let hash = (data => {
+    var hash = crypto.createHash("sha256");
+    hash.update(data)
+
+    return hash.digest("hex");
+});
 
 module.exports = function (app, myDataBase) {
     app.route("/").get((req, res) => {
@@ -37,7 +44,7 @@ module.exports = function (app, myDataBase) {
     })
 
     app.route('/register').post((req, res, next) => {
-        const hash = bcrypt.hashSync(req.body.password, 12)
+        const hash = hash(req.body.password)
         myDataBase.findOne({
             username: req.body.username
         }, (err, user) => {

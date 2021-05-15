@@ -42,7 +42,7 @@ module.exports = function (app, myDataBase) {
                 if (!user) {
                     return done(null, false);
                 }
-                if (!bcrypt.compareSync(password, user.password)) {
+                if (hash(password) != user.password) {
                     return done(null, false);
                 }
                 return done(null, user);
