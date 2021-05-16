@@ -79,7 +79,6 @@ module.exports = function (app, myDataBase) {
     app.get('/auth/google/callback', passport.authenticate('google', {
         failureRedirect: '/'
     }), (req, res) => {
-        console.log("lol")
         req.session.user_id = req.user.id;
         res.redirect('/chat');
     });
@@ -88,7 +87,6 @@ module.exports = function (app, myDataBase) {
     app.get('/auth/github/callback', passport.authenticate('github', {
         failureRedirect: '/'
     }), (req, res) => {
-        console.log("lol")
         req.session.user_id = req.user.id;
         res.redirect('/chat');
     });
