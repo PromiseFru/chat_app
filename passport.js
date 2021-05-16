@@ -3,6 +3,7 @@ var ObjectID = require("mongodb").ObjectID;
 var LocalStrategy = require('passport-local');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var GithubStrategy = require('passport-github2').Strategy;
 const crypto = require('crypto');
 
 let hash = (data => {
@@ -52,7 +53,45 @@ module.exports = function (app, myDataBase) {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: 'http://localhost:3000/auth/google/callback',
-            passReqToCallback   : true
+            passReqToCallback: true
+        },
+        function (request, accessToken, refreshToken, profile, done) {
+            // console.log(profile);
+
+            myDataBase.findOneAndUpdate({
+                    id: profile.id
+                }, {
+                    $setOnInsert: {
+                        id: profile.id,
+                        name: profile.displayName,
+                        photo: profile.photos[0].value || '',
+                        email: Array.isArray(profile.emails) ?
+                            profile.emails[0].value : 'No public email',
+                        created_on: new Date(),
+                        provider: profile.provider || ''
+                    },
+                    $set: {
+                        last_login: new Date()
+                    },
+                    $inc: {
+                        login_count: 1
+                    }
+                }, {
+                    upsert: true,
+                    new: true
+                },
+                (err, doc) => {
+                    return done(null, doc.value);
+                }
+            );
+        }
+    ));
+
+    passport.use(new GithubStrategy({
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: 'http://localhost:3000/auth/github/callback',
+            passReqToCallback: true
         },
         function (request, accessToken, refreshToken, profile, done) {
             // console.log(profile);
