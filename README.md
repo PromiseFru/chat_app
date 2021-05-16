@@ -1,6 +1,6 @@
 ### CHAT APP
 
-A basic browser-base chat app built with Expressjs and Socket.io
+A basic browser-based chat app built with Expressjs and Socket.io
 
 ### Installation
 * npm install
