@@ -73,12 +73,13 @@ module.exports = function (app, myDataBase) {
         })
     })
 
-    app.get('/auth/github', passport.authenticate('github', {
-        scope: ['user:email']
+    app.get('/auth/google', passport.authenticate('google', {
+        scope: ['email', 'profile']
     }));
-    app.get('/auth/github/callback', passport.authenticate('github', {
+    app.get('/auth/google/callback', passport.authenticate('google', {
         failureRedirect: '/'
     }), (req, res) => {
+        console.log("lol")
         req.session.user_id = req.user.id;
         res.redirect('/chat');
     });
