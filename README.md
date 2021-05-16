@@ -1,6 +1,30 @@
-### chat_app
+### CHAT APP
 
-* A bi-directional communication system 
-* Login to chat with credentials
-* Stores chat in a database
-* Fetches chats from database and brings to each user
+A basic chat app built with Expressjs and Socket.io
+
+### Configuration
+* npm install
+* Copy "sample.env" to ".env" and set the variables
+
+### Start
+* npm start
+### Features
+* Create account
+* Login with account credentials
+* Login with google account
+* Login with github account
+^ General chat room for all logged in users
+
+### Features to add
+* Store messages in databse
+* Login with twitter account
+* Pop-up notifications upon new event
+* Align messages left and right
+
+### Technologies
+* MongoDB 
+* Socket.io
+* ExpressJs
+* Crypto
+* Passport
+* Pug
