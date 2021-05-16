@@ -21,6 +21,16 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    store: store,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: false
+    }
+}));
+
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
@@ -29,7 +39,7 @@ app.set('view engine', 'pug');
 io.use(
     passportSocketIo.authorize({
         cookieParser: cookieParser,
-        key: 'express.sid',
+        key: 'connect.sid',
         secret: process.env.SESSION_SECRET,
         store: store,
         success: onAuthorizeSuccess,
@@ -55,6 +65,7 @@ myDB(async client => {
     io.on('connection', socket => {
         console.log('A user has connected');
         ++currentUsers;
+        // console.log(socket.request)
         io.emit('user', {
             name: socket.request.user.name,
             currentUsers,
@@ -88,7 +99,6 @@ myDB(async client => {
 
 function onAuthorizeSuccess(data, accept) {
     console.log('successful connection to socket.io');
-
     accept(null, true);
 }
 

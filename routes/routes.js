@@ -13,9 +13,7 @@ module.exports = function (app, myDataBase) {
         res.render('pug', {
             showLogin: true,
             showRegistration: true,
-            showSocialAuth: true,
-            title: "Hey there!",
-            message: "Please Login"
+            showSocialAuth: true
         });
     });
 
@@ -29,13 +27,8 @@ module.exports = function (app, myDataBase) {
     app.post("/login", passport.authenticate("local", {
         failureRedirect: "/"
     }), (req, res) => {
-        res.redirect("/profile");
-    })
-
-    app.get("/profile", ensureAuthenticated, (req, res) => {
-        res.render(process.cwd() + "/views/pug/profile", {
-            username: req.user.username,
-        });
+        req.session.user_id = req.user.id;
+        res.redirect("/chat");
     })
 
     app.get('/logout', (req, res) => {
@@ -55,7 +48,8 @@ module.exports = function (app, myDataBase) {
             } else {
                 myDataBase.insertOne({
                     username: req.body.username,
-                    password: password_hash
+                    password: password_hash,
+                    name: req.body.name
                 }, (err, doc) => {
                     if (err) {
                         res.redirect('/');
@@ -68,17 +62,20 @@ module.exports = function (app, myDataBase) {
     }, passport.authenticate('local', {
         failureRedirect: '/'
     }), (req, res, next) => {
-        console.log("i see you")
-        res.redirect('/profile');
+        req.session.user_id = req.user.id;
+        res.redirect('/chat');
     });
 
     app.get('/chat', ensureAuthenticated, (req, res) => {
+        // console.log(req.user)
         res.render(process.cwd() + '/views/pug/chat', {
             user: req.user
         })
     })
 
-    app.get('/auth/github', passport.authenticate('github'));
+    app.get('/auth/github', passport.authenticate('github', {
+        scope: ['user:email']
+    }));
     app.get('/auth/github/callback', passport.authenticate('github', {
         failureRedirect: '/'
     }), (req, res) => {

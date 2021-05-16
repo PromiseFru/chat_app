@@ -2,8 +2,7 @@ require('dotenv').config();
 var ObjectID = require("mongodb").ObjectID;
 var LocalStrategy = require('passport-local');
 var passport = require('passport');
-var session = require('express-session');
-var GitHubStrategy = require('passport-github').Strategy;
+var GitHubStrategy = require('passport-github2').Strategy;
 const crypto = require('crypto');
 
 let hash = (data => {
@@ -14,15 +13,6 @@ let hash = (data => {
 });
 
 module.exports = function (app, myDataBase) {
-    app.use(session({
-        secret: process.env.SESSION_SECRET,
-        resave: true,
-        saveUninitialized: true,
-        cookie: {
-            secure: false
-        }
-    }));
-
     app.use(passport.initialize());
     app.use(passport.session());
 

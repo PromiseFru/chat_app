@@ -1,18 +1,13 @@
 html
   head
-    title Promise Chat
+    title CHAT APP
     meta(name='description', content='Home page')
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/public/style.css')
   body
-    h1.border.center Promise Chat
-    h2.center#pug-success-message
-    | #{title}
-    p#pug-variable=message
-    
-    
+    h1.border.center CHAT APP
     
     if showLogin
       hr
@@ -31,6 +26,9 @@ html
       hr
       h2.center Registration Form
       form(action='/register', method='post').center
+        div
+          label Name:
+          input(type='text', name='name')
         div
           label Username:
           input(type='text', name='username')
