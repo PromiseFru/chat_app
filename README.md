@@ -1,9 +1,11 @@
 ### CHAT APP
 
-A basic chat app built with Expressjs and Socket.io
+A basic browser-base chat app built with Expressjs and Socket.io
+
+### Installation
+* npm install
 
 ### Configuration
-* npm install
 * Copy "sample.env" to ".env" and set the variables
 
 ### Start
