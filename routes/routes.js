@@ -9,13 +9,13 @@ let hash = (data => {
 });
 
 module.exports = function (app, myDataBase) {
-    app.get('/', (req, res) => {
-        res.render('pug', {
-            showLogin: true,
-            showRegistration: true,
-            showSocialAuth: true
-        });
-    });
+    // app.get('/', (req, res) => {
+    //     res.render('pug', {
+    //         showLogin: true,
+    //         showRegistration: true,
+    //         showSocialAuth: true
+    //     });
+    // });
 
     function ensureAuthenticated(req, res, next) {
         if (req.isAuthenticated()) {

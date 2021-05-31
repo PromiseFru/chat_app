@@ -16,6 +16,7 @@ const store = new MongoStore({
 const app = express();
 
 app.use("/public", express.static(process.cwd() + "/public"));
+app.use("/", express.static(process.cwd() + "/views/html"));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -34,7 +35,7 @@ app.use(session({
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-app.set('view engine', 'pug');
+// app.set('view engine', 'pug');
 
 io.use(
     passportSocketIo.authorize({
