@@ -68,7 +68,7 @@ module.exports = function (app, myDataBase) {
 
     app.get('/chat', ensureAuthenticated, (req, res) => {
         // console.log(req.user)
-        res.render(process.cwd() + '/views/pug/chat', {
+        res.sendFile(process.cwd() + '/views/html/chat.html', {
             user: req.user
         })
     })
