@@ -1,16 +1,16 @@
 "use strict";
 require('dotenv').config()
 const express = require("express");
-const myDB = require('./configs/connection.js');
 var routes = require('./routes/routes.js');
 var passport = require('./passport.js');
 const passportSocketIo = require('passport.socketio');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const URI = process.env.MONGO_URI;
+const URI = process.env.DB_URL;
 const store = new MongoStore({
-    url: URI
+    url: URI,
+    dbName: process.env.DB_NAME
 });
 
 const app = express();
@@ -48,54 +48,44 @@ io.use(
     })
 );
 
-myDB(async client => {
-    const myDataBase = await client.db("test").collection("users");
+passport(app);
 
-    passport(app, myDataBase);
+routes(app);
 
-    routes(app, myDataBase);
+app.use((req, res, next) => {
+    res.status(404)
+        .type('text')
+        .send('Not Found')
+})
 
-    app.use((req, res, next) => {
-        res.status(404)
-            .type('text')
-            .send('Not Found')
-    })
+let currentUsers = 0;
 
-    let currentUsers = 0;
-
-    io.on('connection', socket => {
-        console.log('A user has connected');
-        ++currentUsers;
-        io.emit('user', {
-            name: socket.request.user.name,
-            currentUsers,
-            connected: true
-        });
-        socket.on('chat message', (message) => {
-            io.emit('chat message', {
-                name: socket.request.user.name,
-                message
-            });
-        });
-
-        socket.on('disconnect', () => {
-            console.log('A user has disconnected');
-            --currentUsers;
-            io.emit('user', {
-                name: socket.request.user.name,
-                currentUsers,
-                connected: false
-            });
+io.on('connection', socket => {
+    console.log('A user has connected');
+    ++currentUsers;
+    io.emit('user', {
+        nickname: socket.request.user.nickname,
+        currentUsers,
+        connected: true
+    });
+    socket.on('chat message', (message) => {
+        io.emit('chat message', {
+            nickname: socket.request.user.nickname,
+            message
         });
     });
-}).catch(err => {
-    app.route("/").get((req, res) => {
-        res.render("pug", {
-            title: err,
-            message: "Unable to Login"
+
+    socket.on('disconnect', () => {
+        console.log('A user has disconnected');
+        --currentUsers;
+        io.emit('user', {
+            nickname: socket.request.user.nickname,
+            currentUsers,
+            connected: false
         });
     });
 });
+
 
 function onAuthorizeSuccess(data, accept) {
     console.log('successful connection to socket.io');

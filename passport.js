@@ -13,7 +13,11 @@ let hash = (data => {
     return hash.digest("hex");
 });
 
-module.exports = function (app, myDataBase) {
+let MongoDB = require("./database").MongoDB;
+const db = new MongoDB();
+const User = db.models.users;
+
+module.exports = function (app) {
     app.use(passport.initialize());
     app.use(passport.session());
 
@@ -22,7 +26,7 @@ module.exports = function (app, myDataBase) {
     });
 
     passport.deserializeUser((id, done) => {
-        myDataBase.findOne({
+        User.findOne({
             _id: new ObjectID(id)
         }, (err, doc) => {
             done(null, doc);
@@ -31,7 +35,7 @@ module.exports = function (app, myDataBase) {
 
     passport.use(new LocalStrategy(
         function (username, password, done) {
-            myDataBase.findOne({
+            User.findOne({
                 username: username
             }, function (err, user) {
                 console.log('User ' + username + ' attempted to log in.');
@@ -58,7 +62,7 @@ module.exports = function (app, myDataBase) {
         function (request, accessToken, refreshToken, profile, done) {
             // console.log(profile);
 
-            myDataBase.findOneAndUpdate({
+            User.findOneAndUpdate({
                     id: profile.id
                 }, {
                     $setOnInsert: {
@@ -96,7 +100,7 @@ module.exports = function (app, myDataBase) {
         function (request, accessToken, refreshToken, profile, done) {
             // console.log(profile);
 
-            myDataBase.findOneAndUpdate({
+            User.findOneAndUpdate({
                     id: profile.id
                 }, {
                     $setOnInsert: {

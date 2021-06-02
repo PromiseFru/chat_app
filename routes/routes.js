@@ -8,15 +8,11 @@ let hash = (data => {
     return hash.digest("hex");
 });
 
-module.exports = function (app, myDataBase) {
-    // app.get('/', (req, res) => {
-    //     res.render('pug', {
-    //         showLogin: true,
-    //         showRegistration: true,
-    //         showSocialAuth: true
-    //     });
-    // });
+let MongoDB = require("../database").MongoDB;
+const db = new MongoDB();
+const User = db.models.users;
 
+module.exports = function (app) {
     function ensureAuthenticated(req, res, next) {
         if (req.isAuthenticated()) {
             return next();
@@ -38,7 +34,7 @@ module.exports = function (app, myDataBase) {
 
     app.post('/register', (req, res, next) => {
         const password_hash = hash(req.body.password);
-        myDataBase.findOne({
+        User.findOne({
             username: req.body.username
         }, (err, user) => {
             if (err) {
@@ -46,15 +42,15 @@ module.exports = function (app, myDataBase) {
             } else if (user) {
                 res.redirect('/');
             } else {
-                myDataBase.insertOne({
+                User.create({
                     username: req.body.username,
                     password: password_hash,
-                    name: req.body.name
+                    nickname: req.body.nickname
                 }, (err, doc) => {
                     if (err) {
                         res.redirect('/');
                     } else {
-                        next(null, doc.ops[0]);
+                        next(null, doc);
                     }
                 })
             }
