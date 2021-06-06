@@ -4,6 +4,7 @@ var LocalStrategy = require('passport-local');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 var GithubStrategy = require('passport-github2').Strategy;
+var flash = require("connect-flash");
 const crypto = require('crypto');
 
 let hash = (data => {
@@ -20,6 +21,7 @@ const User = db.models.users;
 module.exports = function (app) {
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(flash());
 
     passport.serializeUser((user, done) => {
         done(null, user._id);

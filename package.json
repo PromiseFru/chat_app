@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/PromiseFru/chat_app#readme",
   "dependencies": {
+    "connect-flash": "^0.1.1",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
