@@ -69,6 +69,12 @@ module.exports = function (app) {
         })
     })
 
+    app.get('/whoami', ensureAuthenticated, (req, res) => {
+        res.json({
+            user: req.user
+        });
+    });
+
     app.get('/auth/google', passport.authenticate('google', {
         scope: ['email', 'profile']
     }));

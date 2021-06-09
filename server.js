@@ -13,6 +13,11 @@ const store = new MongoStore({
     dbName: process.env.DB_NAME
 });
 
+let MongoDB = require("./database").MongoDB;
+const db = new MongoDB();
+const User = db.models.users;
+const Chat = db.models.chats;
+
 const app = express();
 
 app.use("/public", express.static(process.cwd() + "/public"));
@@ -35,6 +40,16 @@ app.use(session({
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
+function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+}
 // app.set('view engine', 'pug');
 
 io.use(
@@ -60,18 +75,34 @@ app.use((req, res, next) => {
 
 let currentUsers = 0;
 
-io.on('connection', socket => {
+io.on('connection', async (socket) => {
     console.log('A user has connected');
     ++currentUsers;
+
+    let chats = await Chat.find({}).catch(err => {
+        next(err);
+    });
+
     io.emit('user', {
         nickname: socket.request.user.nickname,
         currentUsers,
+        chats,
         connected: true
     });
-    socket.on('chat message', (message) => {
+
+    socket.on('chat message', async (message) => {
+        let newChat = await Chat.create({
+            message: message,
+            sender: socket.request.user.nickname,
+            userId: socket.request.user.id,
+            date: new Date().toDateString(),
+            time: formatAMPM(new Date())
+        }).catch(err => {
+            next(err);
+        });
+
         io.emit('chat message', {
-            nickname: socket.request.user.nickname,
-            message
+            newChat
         });
     });
 
