@@ -11,6 +11,7 @@ let hash = (data => {
 let MongoDB = require("../database").MongoDB;
 const db = new MongoDB();
 const User = db.models.users;
+const Chat = db.models.chats;
 
 module.exports = function (app) {
     function ensureAuthenticated(req, res, next) {
@@ -72,6 +73,16 @@ module.exports = function (app) {
     app.get('/whoami', ensureAuthenticated, (req, res) => {
         res.json({
             user: req.user
+        });
+    });
+
+    app.get('/getChats', ensureAuthenticated, async (req, res) => {
+        let chats = await Chat.find({}).catch(err => {
+            next(err);
+        });
+
+        res.json({
+            chats
         });
     });
 

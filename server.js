@@ -79,14 +79,9 @@ io.on('connection', async (socket) => {
     console.log('A user has connected');
     ++currentUsers;
 
-    let chats = await Chat.find({}).catch(err => {
-        next(err);
-    });
-
     io.emit('user', {
         nickname: socket.request.user.nickname,
         currentUsers,
-        chats,
         connected: true
     });
 
@@ -102,7 +97,11 @@ io.on('connection', async (socket) => {
         });
 
         io.emit('chat message', {
-            newChat
+            message: newChat.message,
+            sender: newChat.sender,
+            userId: newChat.userId,
+            date: newChat.date,
+            time: newChat.time
         });
     });
 
