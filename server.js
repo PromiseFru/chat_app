@@ -79,7 +79,7 @@ io.on('connection', async (socket) => {
     console.log('A user has connected');
     ++currentUsers;
 
-    io.emit('user', {
+    socket.broadcast.emit('user', {
         nickname: socket.request.user.nickname,
         currentUsers,
         connected: true
