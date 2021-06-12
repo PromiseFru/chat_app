@@ -7,8 +7,8 @@ $(document).ready(function () {
         fetch("/whoami").then((res) => {
             return res.json();
         }).then((whoami) => {
-            let sides = "left";
-            let speech_sides = "left";
+            let sides = "";
+            let speech_sides = "";
 
             for (let i = 0; i < chats.length; i++) {
                 sides = whoami.user._id == chats[i].userId ? "right" : "left";

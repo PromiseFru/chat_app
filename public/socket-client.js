@@ -24,13 +24,13 @@ $(document).ready(function () {
             let speech_sides = "";
 
             sides = whoami.user._id == data.userId ? "right" : "left";
-            speech_sides = whoami.user._id == data.userId ? "speech-right" :
+            speech_sides = whoami.user._id == data.userId ? "speech-right" : "";
 
-                $('.list-unstyled.media-block').append($('<li>.mar-btm').html(
-                    `<div class="media-left">
+            $('.list-unstyled.media-block').append($('<li>.mar-btm').html(
+                `<div class="media-${sides}">
                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle img-sm" alt="Profile Picture">
                 </div>
-                <div class="media-body pad-hor">
+                <div class="media-body pad-hor ${speech_sides}">
                     <div class="speech">
                         <a href="#" class="media-heading">${data.sender}</a>
                         <p>${data.message}</p>
@@ -40,7 +40,7 @@ $(document).ready(function () {
                         </p>
                     </div>
                 </div>`
-                ));
+            ));
         });
     });
 });
