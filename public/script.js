@@ -14,7 +14,7 @@ $(document).ready(function () {
                 sides = whoami.user._id == chats[i].userId ? "right" : "left";
                 speech_sides = whoami.user._id == chats[i].userId ? "speech-right" : ""
 
-                    $('.list-unstyled.media-block').append($('<li>.mar-btm').html(
+                    $('.list-unstyled.media-block').append($('<li>').addClass("mar-btm").html(
                         `<div class="media-${sides}">
                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle img-sm" alt="Profile Picture">
                         </div>
